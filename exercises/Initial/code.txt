@@ -1,0 +1,6 @@
+Sub My_first_Micros():
+	Msgbox("Welcom, --place your name in here--")
+	Msgbox("Wow, This is your first VBA code")	
+
+End Sub
+

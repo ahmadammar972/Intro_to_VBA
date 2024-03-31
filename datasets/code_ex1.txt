@@ -1,0 +1,51 @@
+Sub CalculateFinalMarks()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim finalMarks As Range
+    Dim maxMark As Double
+    Dim minMark As Double
+    Dim sumMarks As Double
+    Dim successCount As Integer
+    Dim failCount As Integer
+    Dim cell As Range
+    
+    ' Set worksheet
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Change "Sheet1" to your actual sheet name
+    
+    ' Find the last row with data in column B
+    lastRow = ws.Cells(ws.Rows.Count, "B").End(xlUp).Row
+    
+    ' Set range for final marks
+    Set finalMarks = ws.Range("F2:F" & lastRow)
+    
+    ' Calculate final marks
+    For Each cell In finalMarks
+        cell.Value = (ws.Cells(cell.Row, "B").Value + ws.Cells(cell.Row, "C").Value + ws.Cells(cell.Row, "D").Value + ws.Cells(cell.Row, "E").Value) / 4
+    Next cell
+    
+    ' Calculate summary statistics
+    maxMark = Application.WorksheetFunction.Max(finalMarks)
+    minMark = Application.WorksheetFunction.Min(finalMarks)
+    sumMarks = Application.WorksheetFunction.Sum(finalMarks)
+    successCount = Application.WorksheetFunction.CountIf(finalMarks, ">50")
+    failCount = Application.WorksheetFunction.CountIf(finalMarks, "<=50")
+    
+    ' Output summary table
+    ws.Range("I2").Value = maxMark
+    ws.Range("I3").Value = minMark
+    ws.Range("I4").Value = sumMarks / (lastRow - 1) ' Exclude header row
+    ws.Range("I5").Value = successCount
+    ws.Range("I6").Value = failCount
+    
+    ' Color cells of failures with red
+    For Each cell In finalMarks
+        If cell.Value < 50 Then
+            cell.Interior.Color = RGB(255, 0, 0) ' Red color
+        End If
+    Next cell
+    
+    ' Format summary table
+    ws.Range("G:H").Columns.AutoFit
+    ws.Range("G2:G6").HorizontalAlignment = xlCenter
+End Sub
+
